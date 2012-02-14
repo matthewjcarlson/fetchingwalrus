@@ -1,0 +1,13 @@
+Running:
+node im.js
+
+Urls:
+localhost:8081/im?i=http://www.nasa.gov/images/content/440719main_SeaIce_2010_V15_STILL.jpg
+localhost:8081/pdf?url=http://shutterfly.com
+
+Rasterizing Script:
+phantomjs rasterize.js 'http://shutterfly.com' shutterfly.pdf
+
+Binaries:
+brew install cairo
+download binary from phantom.js and add bin to PATH

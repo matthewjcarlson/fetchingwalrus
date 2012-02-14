@@ -94,5 +94,3 @@ app.use(express.errorHandler({ showStack: true }));
 app.listen(8081);
 
 console.log("I am listening...don't screw it up");   
-//localhost:8081/im?i=http://www.nasa.gov/images/content/440719main_SeaIce_2010_V15_STILL.jpg
-//http://localhost:8081/pdf?url=http://shutterfly.com
