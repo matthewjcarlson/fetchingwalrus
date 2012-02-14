@@ -3,6 +3,7 @@ var express = require('express'),
   http = require('http'),
   parse = require('url').parse,
   fs = require('fs'),
+  phantom = require('phantom'),
   Canvas = require('canvas'),
   Image = Canvas.Image;
 
@@ -20,6 +21,23 @@ app.post('/im', function (req, res) {
   var original = req.param("i");
   fetchImage(original);
   res.send("Fetched & Resize");
+});
+
+app.get('/pdf', function(req, res) {
+   var address = req.param("url");
+   console.log(address);
+   phantom.create(function (ph){
+     ph.createPage(function(page){
+       page.set('viewportSize', {width:640,height:480});
+       page.open(address, function (status) {
+        if (status !== 'success') {
+            console.log('Unable to load the address!');
+        } else {
+            console.log('Trying to render!');
+        }
+       });    
+     });
+   });
 });
 
 function fetchImage(url){
