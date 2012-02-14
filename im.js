@@ -24,7 +24,6 @@ app.post('/im', function (req, res) {
 
 function fetchImage(url){
   var url = parse(url);
-  console.log(url);
   http.get({
         path: url.pathname,
         host: url.hostname
