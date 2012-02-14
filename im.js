@@ -28,12 +28,19 @@ app.get('/pdf', function(req, res) {
    console.log(address);
    phantom.create(function (ph){
      ph.createPage(function(page){
-       page.set('viewportSize', {width:640,height:480});
+       page.set('viewportSize', {width:640,height:640});
        page.open(address, function (status) {
         if (status !== 'success') {
-            console.log('Unable to load the address!');
+            console.log('Unable to load the address');
         } else {
-            console.log('Trying to render!');
+            console.log('Trying to render');
+            setTimeout(function () {
+               page.render('test.pdf', function(status){
+                 console.log('Done rendering');
+                 page.release();
+                 ph.exit();
+               });
+            }, 100);
         }
        });    
      });
@@ -88,3 +95,4 @@ app.listen(8081);
 
 console.log("I am listening...don't screw it up");   
 //localhost:8081/im?i=http://www.nasa.gov/images/content/440719main_SeaIce_2010_V15_STILL.jpg
+//http://localhost:8081/pdf?url=http://shutterfly.com
