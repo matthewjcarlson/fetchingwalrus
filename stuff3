@@ -1,0 +1,56 @@
+var http = require('http'),
+  fs = require('fs'),
+  Canvas = require('canvas'),
+  canvas = new Canvas(200,200),
+  ctx = canvas.getContext('2d'),
+  Image = Canvas.Image;
+
+options = {
+    host: 'img1.eyefetch.com'
+  , port: 80
+  , path: '/Portfolio%5CButterflyShutterfly%5C84178.jpg'
+}
+
+
+var imagedata = '';
+
+var request = http.get(options, function(res){
+    
+    res.setEncoding('binary');
+    var type = res.headers["content-type"];
+    var prefix = "data:" + type + ";base64,";
+    res.on('data', function(chunk){
+        imagedata += chunk;
+    });
+
+    res.on('end', function(){
+      var buf = new Buffer(imagedata, 'binary');
+      fs.writeFile(__dirname + '/resize.jpg', buf);  
+      var img = new Image;
+      img.onerror = function(err){
+        throw err;
+       };
+       img.onload = function(){
+  var width = img.width / 2
+    , height = img.height / 2
+    , canvas = new Canvas(width, height)
+    , ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, width, height);
+  canvas.toBuffer(function(err, buff){
+    fs.writeFile(__dirname + '/resize2.jpg', buff, function(){
+      console.log('Resized and saved');
+    });
+  });
+};
+   img.src = __dirname + '/resize.jpg';
+    });
+});
+
+   
+
+
+
+
+
+
+ 

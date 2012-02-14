@@ -1,0 +1,99 @@
+// }
+      img.onerror = function(err){
+  throw err;
+};
+
+img.onload = function(){
+  var width = img.width / 2
+    , height = img.height / 2
+    , canvas = new Canvas(width, height)
+    , ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, width, height);
+  canvas.toBuffer(function(err, buf){
+    fs.writeFile(__dirname + '/resize.png', buf, function(){
+      console.log('Resized and saved in %dms', new Date - start);
+    });
+  });
+};
+
+img.src = __dirname + '/squid.png';
+
+localhost:8081/im?i=http://img1.eyefetch.com/Portfolio%5CButterflyShutterfly%5C84178.jpg
+
+http://img1.eyefetch.com/Portfolio%5CButterflyShutterfly%5C84178.jpg
+
+
+var Canvas = require('../')
+  , Image = Canvas.Image
+  , canvas = new Canvas(400, 400)
+  , ctx = canvas.getContext('2d')
+  , http = require('http')
+  , parse = require('url').parse
+  , fs = require('fs');
+
+
+
+
+http.get({
+    path: url.pathname + url.search
+  , host: url.hostname
+}, function(res){
+  var buf = '';
+  res.setEncoding('binary');
+  res.on('data', function(chunk){ buf += chunk });
+  res.on('end', function(){
+    var img = new Image;
+    img.src = new Buffer(buf, 'binary');
+    ctx.drawImage(img, 0, 0);
+    fs.writeFile('/tmp/tobi.png', canvas.toBuffer());
+  });
+});
+
+
+function resizeImage(img, callback){
+  console.log(img);
+  var canvasImage = new Image,
+      start = new Date;
+      canvasImage.src = img;
+  var width = canvasImage.width / 2,
+        height = canvasImage.height / 2,
+        canvas = new Canvas(width, height),
+        ctx = canvas.getContext('2d');
+        ctx.drawImage(canvasImage, 0, 0, width, height);
+        canvas.toBuffer(function(err, buf){
+        fs.writeFile(__dirname + '/resize.jpg', buf, function(){
+          console.log('Resized and saved in %dms', new Date - start);
+        });
+        callback();
+  });
+}
+function getImage(uri, callback) { 
+    request(
+    {
+        encoding: 'binary',
+        uri: uri,
+    }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            callback(null, body);
+        } else {
+            callback(error, null);
+        }
+    });
+}
+
+
+res.on('end', function(){
+        var img = new Image;
+        img.src = new Buffer(buf, 'binary');
+        var width = img.width / 2,
+        height = img.height / 2,
+        canvas = new Canvas(width, height),
+        ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBuffer(function(err, buf){
+        fs.writeFile(__dirname + '/resize.jpg', buf, function(){
+          console.log('Resized and saved in %dms', new Date - start);
+        });
+      });
+      });
+     });

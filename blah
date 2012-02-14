@@ -1,0 +1,37 @@
+var express = require('express'),
+    app = express.createServer(),
+    Canvas = require('canvas'),
+    Image = Canvas.Image,
+    fs = require('fs'),
+    http = require('http'),
+    parse = require('url').parse;
+
+    app.get('/im', function (req, res) {
+      var original = req.param("i");
+      var url = parse(original);
+      http.get({
+        path: url.pathname + url.search,
+        host: url.hostname
+      }, function(res){
+      var buf = '';
+      res.setEncoding('binary');
+      res.on('data', function(chunk){ buf += chunk });
+      res.on('end', function(){
+      	console.log('end');
+        var img = new Image;
+        img.src = new Buffer(buf, 'binary');
+        
+        canvas = new Canvas(img.width, img.height),
+        ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        fs.writeFile('/resize.jpg', canvas.toBuffer());
+      });
+     });
+    });
+
+  
+
+    // Middleware
+app.use(express.errorHandler({ showStack: true }));
+
+app.listen(8081);

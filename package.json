@@ -1,0 +1,15 @@
+{
+  "author": "Matt",
+  "name": "im.js",
+  "description": "im.js",
+  "version": "0.0.0",
+  "private": true,
+  "main": "im.js",
+  "engines": {
+    "node": "~0.6.10"
+  },
+  "dependencies": {
+    "canvas": ">= 0.0.1",
+    "express": ">=0.0.1"
+  }
+}
