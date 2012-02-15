@@ -10,11 +10,36 @@ var express = require('express'),
 app.get('/im', function (req, res) {
   var original = req.param("i");
   fetchImage(original);
-  fs.readFile(__dirname + '/resize-sucka4.jpg', function (err, data) {
-  if (err) throw err;
-    res.send(new Buffer(data, 'binary'), { 'Content-Type': 'image/jpeg' });
-  });
+  // fs.readFile(__dirname + '/resize-sucka.jpg', function (err, data) {
+  // if (err) throw err;
+  //   res.send(new Buffer(data, 'binary'), { 'Content-Type': 'image/jpeg' });
+  // });
   
+});
+
+app.get('/crop', function(req,res){
+  var original = req.param("i");
+  var url = parse(original);
+  http.get({
+        path: url.pathname,
+        host: url.hostname
+      }, 
+  function(res){
+    if (res.statusCode == 200){
+      var imagedata = '';
+      res.setEncoding('binary');
+      res.on('data', function(chunk){
+        imagedata += chunk;
+      });
+      res.on('end', function(){
+        console.log('cropping...');
+        cropImage(imagedata);
+      });  
+    }
+    res.on('error', function(e) {
+      console.log("****Errors*****: " + e.message);
+    });
+  });
 });
 
 app.post('/im', function (req, res) {
@@ -28,7 +53,7 @@ app.get('/pdf', function(req, res) {
    console.log(address);
    phantom.create(function (ph){
      ph.createPage(function(page){
-       page.set('viewportSize', {width:640,height:640});
+       page.set('viewportSize', {width:1000,height:1000});
        page.open(address, function (status) {
         if (status !== 'success') {
             console.log('Unable to load the address');
@@ -40,7 +65,7 @@ app.get('/pdf', function(req, res) {
                  page.release();
                  ph.exit();
                });
-            }, 100);
+            }, 300);
         }
        });    
      });
@@ -68,6 +93,27 @@ function fetchImage(url){
       console.log("****Errors*****: " + e.message);
     });
   });
+}
+
+function cropImage(imagedata){
+  var image = new Image,
+      start = new Date;
+      image.onload = function(){
+      console.log('image on load...');
+      var w = image.width / 2,
+      h = image.height / 2,
+      canvas = new Canvas(w, h),
+      ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0, w, h, 0, 0, w, h);
+      console.log('cropped...');
+      canvas.toBuffer(function(err, buf){
+         fs.writeFile(__dirname + '/crop-sucka.jpg', buf, function(){
+           console.log('Cropped and saved in %dms', new Date - start);
+         });
+        });
+      }
+      console.log('image loaded...');
+      image.src = new Buffer(imagedata, 'binary');  
 }
 
 function processImage(imagedata){
